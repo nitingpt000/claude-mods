@@ -1,6 +1,6 @@
 {
   "name": "nitin-claude-mods",
-  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch) for Claude Code.",
+  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll) for Claude Code.",
   "owner": { "name": "nitingpt000" },
   "plugins": [
     {
@@ -32,6 +32,12 @@
       "description": "A side panel that flags risky tool calls as they happen: destructive commands, force-pushes, scripts piped from the internet, secrets in files, edits outside the project, installs and network use. It only watches, never blocks.",
       "version": "0.1.0",
       "source": "./mods/security-watch"
+    },
+    {
+      "name": "mission-scroll",
+      "description": "A ninja-style mission log in a side panel: every prompt is a mission ranked D to S by the work it took, flawless missions earn a star, and your shinobi rank grows as you complete them.",
+      "version": "0.1.0",
+      "source": "./mods/mission-scroll"
     }
   ]
 }

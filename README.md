@@ -1,6 +1,6 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus two side panels: [Session Diary](#-session-diary) and [Security Watch](#%EF%B8%8F-security-watch).
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus three side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch) and [Mission Scroll](#-mission-scroll).
 
 ## Themes
 
@@ -38,6 +38,10 @@ At the prompt of a terminal session:
 /plugin install security-watch --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install mission-scroll --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -48,6 +52,7 @@ claude plugin install grand-tide --marketplace nitingpt000/claude-mods
 claude plugin install shinobi-dusk --marketplace nitingpt000/claude-mods
 claude plugin install session-diary --marketplace nitingpt000/claude-mods
 claude plugin install security-watch --marketplace nitingpt000/claude-mods
+claude plugin install mission-scroll --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
@@ -137,6 +142,36 @@ A side panel that checks every tool call as it happens and lists the ones worth 
 - connector actions that send, post, delete or create something; read-only connector calls aren't flagged
 
 Safe calls are counted but not listed, so the panel stays quiet. Anything that looks like a secret (tokens, keys, `Bearer …`, `password=…`) is shown as `••••`. Security Watch only watches: it never blocks or changes a call, and when you refuse a permission prompt it shows **⊘ you refused it**. It's a second pair of eyes, not a sandbox.
+
+## 📜 Mission Scroll
+
+A ninja-style mission log in a side panel. Every prompt you send is a mission, ranked by the work it took. It opens when a session starts; `/missions` opens it again.
+
+```
+╔══════════════════════════════════════════════╗
+║ 📜 MISSION SCROLL                            ║
+║ Rank: Chūnin · 10 more to Jōnin              ║
+║ 5 missions · ⭐ 4 flawless · 🔥 streak 3      ║
+║ S·0  A·1  B·2  C·1  D·1                      ║
+╚══════════════════════════════════════════════╝
+╭─ 🗡 MISSION UNDER WAY · rank so far B ────────╮
+│ Refactor the auth module                     │
+│ 9 actions · 2 edits · 6 commands · 1m 12s    │
+│ latest: ▶ npm test                           │
+╰──────────────────────────────────────────────╯
+[ All ] [ ⭐ Flawless ] [ ⚔ Setbacks ] [ Clear ]
+╭──────────────────────────────────────────────╮
+│ [A] Split the token logic into its own file  │
+│ ⭐ flawless · 24 actions · 6 edits · 4m 3s    │
+╰──────────────────────────────────────────────╯
+```
+
+- **Mission rank** is how much work it took: **D** 0–2 actions, **C** 3–7, **B** 8–15, **A** 16–30, **S** 31+. Subagents' actions count too.
+- **How it ended:** ⭐ **flawless** (no failed actions), ⚔ **completed with setbacks**, 🏳 **called off** (you interrupted), ✘ **failed** (an error ended it) or ⊘ **declined**.
+- **Your shinobi rank** grows with the missions you complete in a session: Academy student, Genin (1), Chūnin (5), Jōnin (15), Shadow master (30). The header shows how many more to the next rank, a 🔥 streak of flawless missions in a row, and your S/A/B/C/D tally.
+- While Claude works, a live card shows the mission's rank so far, its counts, how long it has run and the latest action.
+- A flawless A- or S-rank mission earns a toast. Missions started by an automated prompt, such as a background task's notice, are marked ⚙.
+- Works in the terminal, the Desktop app, VS Code and mobile. It only watches.
 
 ## Theme details
 
