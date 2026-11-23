@@ -1,5 +1,9 @@
 # Claude Code mods
 
+[![Latest release](https://img.shields.io/github/v/release/nitingpt000/claude-mods?label=release)](https://github.com/nitingpt000/claude-mods/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+**[Read the v1.0.0 release notes](https://github.com/nitingpt000/claude-mods/releases/latest)** for the full tour, screenshots included.
+
 Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus seven side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll), [Quick Actions](#-quick-actions), [Jutsu Scroll](#-jutsu-scroll), [File Heatmap](#-file-heatmap) and [Git Pulse](#-git-pulse).
 
 The panels share one design: a heading, small rounded chips for the key figures, and rounded cards for the content. The text samples below show what each one holds.
