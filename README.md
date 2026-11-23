@@ -1,6 +1,6 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus six side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll), [Quick Actions](#-quick-actions), [File Heatmap](#-file-heatmap) and [Git Pulse](#-git-pulse).
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus seven side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll), [Quick Actions](#-quick-actions), [Jutsu Scroll](#-jutsu-scroll), [File Heatmap](#-file-heatmap) and [Git Pulse](#-git-pulse).
 
 The panels share one design: a heading, small rounded chips for the key figures, and rounded cards for the content. The text samples below show what each one holds.
 
@@ -56,6 +56,10 @@ At the prompt of a terminal session:
 /plugin install git-pulse --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install jutsu-scroll --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -70,6 +74,7 @@ claude plugin install mission-scroll --marketplace nitingpt000/claude-mods
 claude plugin install quick-actions --marketplace nitingpt000/claude-mods
 claude plugin install file-heatmap --marketplace nitingpt000/claude-mods
 claude plugin install git-pulse --marketplace nitingpt000/claude-mods
+claude plugin install jutsu-scroll --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
@@ -266,6 +271,40 @@ A side panel with the project's git status, kept current. It opens when a sessio
 - **Sections** for Conflicts, Staged, Unstaged and Untracked, each file with a colored status badge (M, A, D, R, ?, U), its name and folder, and its lines added and removed.
 - **Kept current:** it reads git at session start, after every command or edit Claude makes, at the end of each turn, and on **↻ Refresh**. **⇣ Fetch** updates ahead/behind from the remote; git is never allowed to stop and ask for a password.
 - **Read-only:** it runs `git status`, `diff --numstat`, `log` and `stash list` with the repository's hooks off, and `fetch` only when you press it. It never changes your repository.
+- Works in the terminal, the Desktop app, VS Code and mobile.
+
+## 🥷 Jutsu Scroll
+
+[Quick Actions](#-quick-actions) as a ninja's scroll: the same one-click prompts, cast as jutsu. It opens when a session starts; `/jutsu` opens it again. It goes well with Shinobi Dusk and Mission Scroll; you'll likely want it or Quick Actions on, not both.
+
+```
+🥷 Jutsu scroll
+╔ CHAKRA ─────────────────── 70 / 100 · full of chakra ╗
+║ ██████████████████████████░░░░░░░░░░░                ║
+╚══════════════════════════════════════════════════════╝
+( ● ready to cast ) ( Last cast: Eye of Scrutiny at 18:35 )
+╭───────────────────────────────────────────╮
+│ (B) Eye of Scrutiny               (🌀 30) │
+│     Review the changes                    │
+│ 🐉 🐍 🐒              ★☆☆☆☆ · cast 1×      │
+│ [ ⚡ Cast ]  ✎ Prepare                     │
+╰───────────────────────────────────────────╯
+```
+
+| Jutsu | Rank | 🌀 Chakra | Does |
+|---|---|---|---|
+| Trial of Blades | C | 20 | Runs the tests and explains failures, without changing code |
+| Eye of Scrutiny | B | 30 | Reviews the changes for bugs and security problems, without changing code |
+| Clean Sweep | C | 20 | Runs the linter and formatter and fixes what they report |
+| Sealing Technique | B | 25 | Commits the changes with a clear message, without pushing |
+| Reading the Enemy | D | 10 | Explains the last error and how to fix it |
+| Substitution | A | 35 | Undoes the last edit and says what it reverted |
+| Mission Report | D | 10 | Summarizes the session and what's left |
+
+- **⚡ Cast** sends the prompt; **✎ Prepare** puts it in the prompt box to adjust first. While Claude is in a turn, a cast waits its turn instead of interrupting.
+- **Chakra** (0 to 100): each cast spends its cost and each finished turn restores 15. It's only for show: a cast with no chakra left still works, "on fumes".
+- **Mastery** grows with every cast, ★ at 1, 3, 6, 10 and 15, and is kept across sessions. Each jutsu has its own three zodiac hand signs.
+- **Forge your own** with **🔨 Forge a jutsu** from the prompt box, or `/jutsu-add Name | prompt`. Longer orders make higher-rank jutsu with a higher cost. **✕** removes one; yours are kept across sessions.
 - Works in the terminal, the Desktop app, VS Code and mobile.
 
 ## Theme details

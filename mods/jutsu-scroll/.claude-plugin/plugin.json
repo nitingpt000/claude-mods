@@ -1,0 +1,6 @@
+{
+  "name": "jutsu-scroll",
+  "version": "0.1.0",
+  "description": "Quick Actions as a ninja's scroll: one-click prompts as jutsu with ranks, chakra costs, hand signs and a mastery level that grows as you cast them. Forge your own. Chakra is only for show and never stops a cast.",
+  "types": "./types/index.d.ts"
+}

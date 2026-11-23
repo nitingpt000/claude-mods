@@ -1,6 +1,6 @@
 {
   "name": "nitin-claude-mods",
-  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions, File Heatmap, Git Pulse) for Claude Code.",
+  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions, Jutsu Scroll, File Heatmap, Git Pulse) for Claude Code.",
   "owner": {
     "name": "nitingpt000"
   },
@@ -58,6 +58,12 @@
       "description": "A side panel with the project's git status, kept current: branch, upstream, ahead/behind, last commit, staged, unstaged, untracked and conflicted files with lines added and removed, and stashes. Refreshes after every command or edit.",
       "version": "0.1.0",
       "source": "./mods/git-pulse"
+    },
+    {
+      "name": "jutsu-scroll",
+      "description": "Quick Actions as a ninja's scroll: one-click prompts as jutsu with ranks, chakra costs, hand signs and a mastery level that grows as you cast them. Forge your own. Chakra is only for show and never stops a cast.",
+      "version": "0.1.0",
+      "source": "./mods/jutsu-scroll"
     }
   ]
 }
