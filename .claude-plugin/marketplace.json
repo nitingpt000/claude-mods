@@ -14,6 +14,12 @@
       "description": "A galleon at sunset behind the Claude Code Desktop chat: the ship rides the swell while Claude works, and a treasure map unrolls with a route to a glowing X when it needs you. Desktop app only.",
       "version": "0.1.0",
       "source": "./mods/grand-tide"
+    },
+    {
+      "name": "shinobi-dusk",
+      "description": "A ninja village at dusk behind the Claude Code Desktop chat: leaves fall while Claude works, and a seal ignites with a whirl of leaves when it needs you. Desktop app only.",
+      "version": "0.1.0",
+      "source": "./mods/shinobi-dusk"
     }
   ]
 }

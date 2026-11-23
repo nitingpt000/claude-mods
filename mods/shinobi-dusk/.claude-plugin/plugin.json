@@ -1,0 +1,6 @@
+{
+  "name": "shinobi-dusk",
+  "version": "0.1.0",
+  "description": "A ninja village at dusk behind the Claude Code Desktop chat: leaves fall while Claude works, and a seal ignites with a whirl of leaves when it needs you.",
+  "types": "./types/index.d.ts"
+}
