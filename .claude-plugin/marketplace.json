@@ -1,6 +1,6 @@
 {
   "name": "nitin-claude-mods",
-  "description": "Animated backdrop themes and a session diary panel for Claude Code.",
+  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch) for Claude Code.",
   "owner": { "name": "nitingpt000" },
   "plugins": [
     {
@@ -26,6 +26,12 @@
       "description": "A side panel with a live timeline of everything Claude does this session: commands, edits, reads and searches, with timestamps, durations, +/- line counts and failures in red.",
       "version": "0.1.0",
       "source": "./mods/session-diary"
+    },
+    {
+      "name": "security-watch",
+      "description": "A side panel that flags risky tool calls as they happen: destructive commands, force-pushes, scripts piped from the internet, secrets in files, edits outside the project, installs and network use. It only watches, never blocks.",
+      "version": "0.1.0",
+      "source": "./mods/security-watch"
     }
   ]
 }

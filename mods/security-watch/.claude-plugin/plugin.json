@@ -1,0 +1,6 @@
+{
+  "name": "security-watch",
+  "version": "0.1.0",
+  "description": "A side panel that flags risky tool calls as they happen: destructive commands, force-pushes, scripts piped from the internet, secrets in files, edits outside the project, installs and network use. It only watches, never blocks.",
+  "types": "./types/index.d.ts"
+}

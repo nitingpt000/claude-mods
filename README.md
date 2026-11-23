@@ -1,6 +1,6 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus a [Session Diary](#-session-diary) side panel.
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus two side panels: [Session Diary](#-session-diary) and [Security Watch](#%EF%B8%8F-security-watch).
 
 ## Themes
 
@@ -14,7 +14,7 @@ All art is original vector drawing, animated with CSS only.
 
 ## Install
 
-The themes need the Claude Code Desktop app, with a recent Claude Code in its Code tab; the terminal draws no theme. Session Diary works everywhere, the terminal included.
+The themes need the Claude Code Desktop app, with a recent Claude Code in its Code tab; the terminal draws no theme. The side panels work everywhere, the terminal included.
 
 At the prompt of a terminal session:
 
@@ -34,6 +34,10 @@ At the prompt of a terminal session:
 /plugin install session-diary --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install security-watch --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -43,13 +47,14 @@ claude plugin install wisteria-moon --marketplace nitingpt000/claude-mods
 claude plugin install grand-tide --marketplace nitingpt000/claude-mods
 claude plugin install shinobi-dusk --marketplace nitingpt000/claude-mods
 claude plugin install session-diary --marketplace nitingpt000/claude-mods
+claude plugin install security-watch --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
 
 Then start a new local session in the Code tab and send a message: the scene comes up behind the chat.
 
-**Keep one theme on at a time.** Each sets the backdrop when a session starts, so with several on you get whichever loads last. Switch with `claude plugin enable <mod>` and `claude plugin disable <mod>`. Session Diary isn't a theme, so it works alongside any of them.
+**Keep one theme on at a time.** Each sets the backdrop when a session starts, so with several on you get whichever loads last. Switch with `claude plugin enable <mod>` and `claude plugin disable <mod>`. The side panels aren't themes, so they work alongside any of them and each other.
 
 ## 🌸 Wisteria Moon
 
@@ -98,6 +103,40 @@ A side panel with a live timeline of everything Claude does in the session. It o
 - Calls made by a subagent are indented with ↳.
 - Filter by **All**, **Edits**, **Commands** or **Failures**, and **Clear** to start fresh. The newest 400 entries are kept.
 - Works in the terminal, the Desktop app, VS Code and mobile. It only watches: it never blocks or changes a call.
+
+## 🛡️ Security Watch
+
+A side panel that checks every tool call as it happens and lists the ones worth a look. It opens when a session starts; `/security` opens it again.
+
+```
+🔴 1 risky · 🟡 2 to review · 48 calls checked
+[ All ] [ Risky ] [ Review ] [ Clear ]
+
+14:02:11  🔴 Bash  git push -f origin main            ⊘ you refused it
+                   force-pushes, rewriting remote history
+14:03:40  🟡 Bash  npm install left-pad               ✔ ran
+                   installs a package
+14:05:02  🟡 Read  .ssh/id_ed25519                    ✔ ran
+                   reads a file that usually holds secrets
+```
+
+**🔴 Risky**, also shown as a toast:
+- deleting or discarding work: `rm -rf`, `Remove-Item -Recurse -Force`, `git push --force`, `git reset --hard`, `git clean -f`, `DROP TABLE`
+- running a script downloaded from the internet: `curl … | bash`, `iwr … | iex`
+- administrator rights, `chmod 777`, turning off Defender or the firewall, registry edits
+- publishing a package: `npm publish` and the like
+- writing what looks like an API key, token or private key into a file, or changing `.env`, key or credential files
+- changing what runs when a shell, git or Claude Code starts: `.bashrc`, PowerShell profiles, `.git/hooks`, `.claude/settings.json`
+
+**🟡 Review:**
+- `git push`, `curl`, `ssh`, `scp`, GitHub repo or release changes, Docker
+- installing packages with npm, pip, winget, npx and the like
+- reading `.env` or SSH keys, or printing every environment variable
+- editing or reading files outside the project folder, and changing CI workflows
+- `--no-verify`, stopping processes, fetching plain `http` pages
+- connector actions that send, post, delete or create something; read-only connector calls aren't flagged
+
+Safe calls are counted but not listed, so the panel stays quiet. Anything that looks like a secret (tokens, keys, `Bearer …`, `password=…`) is shown as `••••`. Security Watch only watches: it never blocks or changes a call, and when you refuse a permission prompt it shows **⊘ you refused it**. It's a second pair of eyes, not a sandbox.
 
 ## Theme details
 
