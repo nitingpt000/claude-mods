@@ -1,0 +1,6 @@
+{
+  "name": "session-diary",
+  "version": "0.1.0",
+  "description": "A side panel with a live timeline of everything Claude does this session: commands, edits, reads and searches, with timestamps, durations, +/- line counts and failures in red.",
+  "types": "./types/index.d.ts"
+}

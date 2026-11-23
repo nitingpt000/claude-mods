@@ -1,6 +1,8 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app. Each one shows at a glance whether Claude is working or waiting on you.
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus a [Session Diary](#-session-diary) side panel.
+
+## Themes
 
 | Mod | While Claude works | When Claude needs you |
 | --- | --- | --- |
@@ -12,7 +14,7 @@ All art is original vector drawing, animated with CSS only.
 
 ## Install
 
-Needs the Claude Code Desktop app, with a recent Claude Code in its Code tab. The terminal draws no theme.
+The themes need the Claude Code Desktop app, with a recent Claude Code in its Code tab; the terminal draws no theme. Session Diary works everywhere, the terminal included.
 
 At the prompt of a terminal session:
 
@@ -28,6 +30,10 @@ At the prompt of a terminal session:
 /plugin install shinobi-dusk --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install session-diary --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -36,13 +42,14 @@ From a shell:
 claude plugin install wisteria-moon --marketplace nitingpt000/claude-mods
 claude plugin install grand-tide --marketplace nitingpt000/claude-mods
 claude plugin install shinobi-dusk --marketplace nitingpt000/claude-mods
+claude plugin install session-diary --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
 
 Then start a new local session in the Code tab and send a message: the scene comes up behind the chat.
 
-**Keep one theme on at a time.** Each sets the backdrop when a session starts, so with several on you get whichever loads last. Switch with `claude plugin enable <mod>` and `claude plugin disable <mod>`.
+**Keep one theme on at a time.** Each sets the backdrop when a session starts, so with several on you get whichever loads last. Switch with `claude plugin enable <mod>` and `claude plugin disable <mod>`. Session Diary isn't a theme, so it works alongside any of them.
 
 ## 🌸 Wisteria Moon
 
@@ -68,7 +75,31 @@ A hidden ninja village at dusk.
 - **When Claude needs you:** the sky turns red and a glowing 忍 seal ignites in the upper right, ringed by two whirls of leaves turning in opposite directions. A shuriken flies in and strikes the ring, and the shinobi stands watch on the watchtower, scarf in the wind. The shuriken comes from a new angle each time.
 - **Colors:** plum-black surfaces with an ember-orange accent, dark mode only.
 
-## Details
+## 📔 Session Diary
+
+A side panel with a live timeline of everything Claude does in the session. It opens when a session starts; `/diary` opens it again.
+
+```
+12 calls · 4 edits · 6 commands · 1 failed
+[ All ] [ Edits ] [ Commands ] [ Failures ] [ Clear ]
+
+13:41:58  💬 Split the token logic into its own file
+13:42:03    📄 Read     auth/session.ts                 ✔
+13:42:05    ✏️ Edit     auth/token.ts      +48 −12       ✔
+13:42:09    ▶ Bash      npm test                        ✔ 3.2s
+13:42:15    ▶ Bash      git push                        ✘ failed 1.1s
+13:42:20      ↳ 🤖 Agent  Review the diff                 … running
+```
+
+- Each prompt you send starts a new section. Automated prompts, such as a background task's notice, are left out.
+- Every tool call shows its time, a kind icon (edit, command, read, search, web, agent, connector) and a short label: the command, the file, the pattern or the URL.
+- Edits and writes show lines added and removed.
+- Status is `… running` while it works, then ✔ (with its duration when over a second), ✘ **failed** in red, or ⊘ **denied** when you refused a permission.
+- Calls made by a subagent are indented with ↳.
+- Filter by **All**, **Edits**, **Commands** or **Failures**, and **Clear** to start fresh. The newest 400 entries are kept.
+- Works in the terminal, the Desktop app, VS Code and mobile. It only watches: it never blocks or changes a call.
+
+## Theme details
 
 - "Claude needs you" means its turn ended, it asked you a question, or a permission prompt is still unanswered after 1.5 s. The wait keeps Auto mode quiet, since it settles most prompts on its own.
 - Your system's reduced-motion setting stills each scene and shows it finished.
