@@ -7,7 +7,7 @@ import { atom, read, update } from 'claude-code'
 import type { Register } from 'claude-code'
 
 import type { Show, Sort } from '../types'
-import { bar, heatColor, heatOf, hottestFolder, record, relPath, sortFiles, touchOf } from './heat.js'
+import { heatColor, heatOf, hottestFolder, record, relPath, sortFiles, touchOf } from './heat.js'
 
 const PANE = 'file-heatmap'
 const TITLE = 'File heatmap'
@@ -71,54 +71,97 @@ export const register: Register = on => {
     const top = hottestFolder(all, root)
     const max = Math.max(0, ...all.map(heatOf))
     const list = sortFiles(which === 'edited' ? edited : all, by, root)
-    const room = Math.max(4, (e.viewport?.rows ?? 40) - 8)
+    // Each card takes about five rows; keep the header and controls in view.
+    const room = Math.max(3, Math.floor(((e.viewport?.rows ?? 48) - 10) / 5))
 
     const mention = async (rel: string) => {
       await $.prompt.fill({ text: `@${rel} `, mode: 'insert' })
     }
 
-    const row = (f: (typeof all)[number]) => {
+    // A small rounded label, for the header's figures and a card's "this turn".
+    const chip = (key: string, text: string, color?: string) => (
+      <Box key={key} borderStyle="round" borderColor={color ?? 'subtle'} paddingX={1}>
+        <Text size="caption" color={color} weight="medium">{text}</Text>
+      </Box>
+    )
+
+    const card = (f: (typeof all)[number]) => {
       const rel = relPath(f.path, root)
+      const cut = rel.lastIndexOf('/')
+      const name = cut >= 0 ? rel.slice(cut + 1) : rel
+      const folder = cut >= 0 ? rel.slice(0, cut) : '.'
       const hot = f.editedTurn !== undefined && f.editedTurn === thisTurn
+      const heat = heatOf(f)
+      const color = heatColor(f, max)
       return (
-        <Box key={f.path} flexDirection="row" alignItems="center">
-          <Text mono color={heatColor(f, max)}>{bar(heatOf(f), max)} </Text>
-          <Text mono weight={f.edits > 0 ? 'semibold' : 'regular'}>{rel}</Text>
-          {hot && <Text color="error"> 🔥</Text>}
-          <Text dimColor> {f.reads > 0 ? `👁${f.reads}` : ''}{f.reads > 0 && f.edits > 0 ? ' ' : ''}{f.edits > 0 ? `✏️${f.edits}` : ''}</Text>
-          {f.added > 0 && <Text color="diffAdded"> +{f.added}</Text>}
-          {f.removed > 0 && <Text color="diffRemoved"> −{f.removed}</Text>}
-          <Button key={`at-${f.path}`} label="@" plain onPress={() => mention(rel)} />
+        <Box key={f.path} flexDirection="column" borderStyle="round" borderColor={hot ? 'error' : 'subtle'} paddingX={1}>
+          <Box flexDirection="row" justifyContent="space-between" alignItems="center">
+            <Box flexDirection="row" alignItems="center" gap={1}>
+              <Text weight="semibold" mono>{name}</Text>
+              {hot && chip(`hot-${f.path}`, '🔥 this turn', 'error')}
+            </Box>
+            <Button key={`at-${f.path}`} label="@ Mention" plain onPress={() => mention(rel)} />
+          </Box>
+          <Text size="caption" dimColor mono>{folder}</Text>
+          {/* The heat bar: a track with a fill sized to this file's share of the hottest. */}
+          <Box key={`track-${f.path}`} flexDirection="row" width="100%" backgroundColor="inactive">
+            <Box key={`bar-${f.path}`} width={`${Math.max(3, Math.round((heat / Math.max(1, max)) * 100))}%`} backgroundColor={color}>
+              <Text size="caption"> </Text>
+            </Box>
+          </Box>
+          <Box flexDirection="row" gap={1}>
+            <Text size="caption" dimColor>
+              {f.reads > 0 ? `👁 ${f.reads} read${f.reads === 1 ? '' : 's'}` : ''}
+              {f.reads > 0 && f.edits > 0 ? ' · ' : ''}
+              {f.edits > 0 ? `✏️ ${f.edits} edit${f.edits === 1 ? '' : 's'}` : ''}
+            </Text>
+            {f.added > 0 && <Text size="caption" color="diffAdded">+{f.added}</Text>}
+            {f.removed > 0 && <Text size="caption" color="diffRemoved">−{f.removed}</Text>}
+          </Box>
         </Box>
       )
     }
 
     return (
-      <Box flexDirection="column">
-        <Box flexDirection="row">
-          <Text weight="semibold">🔥 {all.length} file{all.length === 1 ? '' : 's'} touched</Text>
-          <Text dimColor> · {edited.length} edited · {all.length - edited.length} only read</Text>
-          {(added > 0 || removed > 0) && <Text color="diffAdded"> · +{added}</Text>}
-          {(added > 0 || removed > 0) && <Text color="diffRemoved"> −{removed}</Text>}
+      <Box flexDirection="column" gap={1}>
+        <Box flexDirection="column">
+          <Text size="heading" weight="bold">🔥 File heatmap</Text>
+          {top !== undefined ? (
+            <Text size="caption" dimColor>
+              Hottest folder: {top.folder} · {Math.round(top.share * 100)}% of the heat
+            </Text>
+          ) : (
+            <Text size="caption" dimColor>Every file Claude reads or edits, hottest first</Text>
+          )}
         </Box>
-        {top !== undefined && (
-          <Text dimColor>
-            Hottest folder: <Text weight="semibold">{top.folder}</Text> ({Math.round(top.share * 100)}% of the heat)
-          </Text>
+
+        {all.length > 0 && (
+          <Box flexDirection="row" flexWrap="wrap" gap={1}>
+            {chip('c-files', `${all.length} file${all.length === 1 ? '' : 's'}`)}
+            {chip('c-edited', `✏️ ${edited.length} edited`, edited.length > 0 ? 'warning' : undefined)}
+            {chip('c-read', `👁 ${all.length - edited.length} read only`)}
+            {(added > 0 || removed > 0) && chip('c-plus', `+${added}`, 'diffAdded')}
+            {(added > 0 || removed > 0) && chip('c-minus', `−${removed}`, 'diffRemoved')}
+          </Box>
         )}
-        <Box flexDirection="row">
+
+        <Box flexDirection="row" flexWrap="wrap" gap={1}>
           {SORTS.map(s => (
             <Button key={`s-${s.id}`} label={s.label} variant={by === s.id ? 'primary' : 'secondary'} onPress={() => update($, sort, () => s.id)} />
           ))}
-          <Button key="show" label={which === 'all' ? 'Edited only' : 'Show all'} onPress={() => update($, show, v => (v === 'all' ? 'edited' : 'all'))} />
-          <Button key="clear" label="Clear" onPress={() => update($, files, () => [])} />
+          <Button key="show" label={which === 'all' ? 'Edited only' : 'Show all'} variant="secondary" onPress={() => update($, show, v => (v === 'all' ? 'edited' : 'all'))} />
+          <Button key="clear" label="Clear" variant="secondary" onPress={() => update($, files, () => [])} />
         </Box>
+
         {list.length === 0 && (
-          <Text dimColor>{all.length === 0 ? 'No files yet. Files Claude reads or edits will show up here, hottest first.' : 'No edited files yet.'}</Text>
+          <Box borderStyle="round" borderColor="subtle" paddingX={1} paddingY={1}>
+            <Text dimColor>{all.length === 0 ? 'No files yet. Files Claude reads or edits will show up here, hottest first.' : 'No edited files yet.'}</Text>
+          </Box>
         )}
-        {list.slice(0, room).map(row)}
-        {list.length > room && <Text dimColor>…and {list.length - room} more</Text>}
-        <Text dimColor>Heat: an edit counts 3, a read 1 · 🔥 changed this turn · @ puts the file in your prompt</Text>
+        {list.slice(0, room).map(card)}
+        {list.length > room && <Text size="caption" dimColor>…and {list.length - room} more</Text>}
+
+        <Text size="caption" dimColor>Heat: an edit counts 3, a read 1 · 🔥 changed this turn · @ Mention puts the file in your prompt</Text>
       </Box>
     )
   })

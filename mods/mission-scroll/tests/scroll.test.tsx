@@ -80,9 +80,13 @@ test('a prompt becomes a mission: under way, then ranked and starred, on every s
   for (const surface of ['terminal', 'desktop', 'vscode', 'mobile'] as const) {
     const ui = await $.ui.mount({ ...PANE, surface })
     expect(await ui.find({ type: 'Text', text: /MISSION UNDER WAY/ })).toBeUndefined()
-    expect((await ui.find({ type: 'Text', text: /^\[B\] $/ }))?.text).toBe('[B] ')
+    // The mission's rank badge, and the tally chip for B.
+    expect((await ui.find({ type: 'Text', text: /^B$/ }))?.text).toBe('B')
+    expect((await ui.find({ type: 'Text', text: /^B · 1$/ }))?.text).toBe('B · 1')
     expect((await ui.find({ type: 'Text', text: /^⭐ flawless$/ }))?.text).toBe('⭐ flawless')
-    expect((await ui.find({ type: 'Text', text: /1 mission · ⭐ 1 flawless/ }))?.text).toContain('1 flawless')
+    expect((await ui.find({ type: 'Text', text: /^1 mission$/ }))?.text).toBe('1 mission')
+    expect((await ui.find({ type: 'Text', text: /^⭐ 1 flawless$/ }))?.text).toBe('⭐ 1 flawless')
+    expect((await ui.find({ type: 'Text', text: /4 more missions to Chūnin/ }))?.text).toBe('4 more missions to Chūnin')
     expect((await ui.find({ type: 'Text', text: /9 actions · 3 edits · 6 commands · 1m 12s/ }))?.text).toContain('9 actions')
     expect((await ui.find({ type: 'Text', text: /^Genin$/ }))?.text).toBe('Genin')
     await ui.unmount()

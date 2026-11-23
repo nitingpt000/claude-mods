@@ -104,51 +104,92 @@ export const register: Register = on => {
     const shown = all.filter(x => shows(f, x))
     // Drop a prompt line whose section shows nothing under the current filter.
     const visible = shown.filter((x, i) => x.kind !== 'prompt' || f === 'all' || (shown[i + 1] !== undefined && shown[i + 1]!.kind !== 'prompt'))
-    const room = Math.max(4, (e.viewport?.rows ?? 40) - 6)
+    const room = Math.max(6, (e.viewport?.rows ?? 48) - 14)
 
-    const row = (x: Entry) => {
-      if (x.kind === 'prompt') {
-        return (
-          <Box flexDirection="row" key={x.id}>
-            <Text dimColor mono>{clock(x.at)} </Text>
-            <Text weight="semibold" color="claude">{ICON.prompt} {x.label}</Text>
-          </Box>
-        )
-      }
-      const state =
-        x.status === 'running' ? <Text color="warning"> … running</Text>
-        : x.status === 'failed' ? <Text color="error"> ✘ failed{x.ms !== undefined ? ` ${duration(x.ms)}` : ''}</Text>
-        : x.status === 'denied' ? <Text color="error"> ⊘ denied</Text>
-        : <Text color="success"> ✔{x.ms !== undefined && x.ms >= 1000 ? ` ${duration(x.ms)}` : ''}</Text>
-      return (
-        <Box flexDirection="row" key={x.id}>
-          <Text dimColor mono>{clock(x.at)} </Text>
-          <Text>{x.isSubagent ? '  ↳ ' : '  '}{ICON[x.kind]} </Text>
-          <Text weight="semibold" color={x.status === 'failed' || x.status === 'denied' ? 'error' : undefined}>{x.tool} </Text>
+    // The newest entries, grouped into one card per prompt.
+    type Group = { prompt?: Entry; items: Entry[] }
+    const groups: Group[] = []
+    for (const x of visible.slice(-room)) {
+      if (x.kind === 'prompt') groups.push({ prompt: x, items: [] })
+      else if (groups.length === 0) groups.push({ items: [x] })
+      else groups[groups.length - 1]!.items.push(x)
+    }
+
+    // A small rounded label.
+    const chip = (key: string, text: string, color?: string) => (
+      <Box key={key} borderStyle="round" borderColor={color ?? 'subtle'} paddingX={1}>
+        <Text size="caption" color={color} weight="medium">{text}</Text>
+      </Box>
+    )
+
+    const status = (x: Entry) =>
+      x.status === 'running' ? <Text size="caption" color="warning">… running</Text>
+      : x.status === 'failed' ? <Text size="caption" color="error">✘ failed{x.ms !== undefined ? ` ${duration(x.ms)}` : ''}</Text>
+      : x.status === 'denied' ? <Text size="caption" color="error">⊘ denied</Text>
+      : <Text size="caption" color="success">✔{x.ms !== undefined && x.ms >= 1000 ? ` ${duration(x.ms)}` : ''}</Text>
+
+    const row = (x: Entry) => (
+      <Box key={x.id} flexDirection="row" alignItems="center" gap={1}>
+        <Text size="caption" dimColor mono>{clock(x.at)}</Text>
+        <Text>{x.isSubagent ? '↳ ' : ''}{ICON[x.kind]}</Text>
+        <Text weight="semibold" color={x.status === 'failed' || x.status === 'denied' ? 'error' : undefined}>{x.tool}</Text>
+        <Box flexGrow={1} flexShrink={1}>
           <Text mono={x.kind === 'command' || x.kind === 'edit' || x.kind === 'read'}>{x.label}</Text>
-          {x.added !== undefined && x.added > 0 && <Text color="diffAdded"> +{x.added}</Text>}
-          {x.removed !== undefined && x.removed > 0 && <Text color="diffRemoved"> −{x.removed}</Text>}
-          {state}
+        </Box>
+        {x.added !== undefined && x.added > 0 && <Text size="caption" color="diffAdded">+{x.added}</Text>}
+        {x.removed !== undefined && x.removed > 0 && <Text size="caption" color="diffRemoved">−{x.removed}</Text>}
+        {status(x)}
+      </Box>
+    )
+
+    const card = (g: Group, i: number) => {
+      const bad = g.items.some(x => x.status === 'failed' || x.status === 'denied')
+      return (
+        <Box key={g.prompt?.id ?? `g${i}`} flexDirection="column" borderStyle="round" borderColor={bad ? 'error' : 'subtle'} paddingX={1}>
+          {g.prompt !== undefined ? (
+            <Box flexDirection="row" justifyContent="space-between" gap={1}>
+              <Text weight="semibold" color="claude">{ICON.prompt} {g.prompt.label}</Text>
+              <Text size="caption" dimColor mono>{clock(g.prompt.at)}</Text>
+            </Box>
+          ) : (
+            <Text size="caption" dimColor>Earlier</Text>
+          )}
+          {g.items.length === 0 && <Text size="caption" dimColor>No tool calls yet</Text>}
+          {g.items.map(row)}
         </Box>
       )
     }
 
     return (
-      <Box flexDirection="column">
-        <Box flexDirection="row">
-          <Text weight="semibold">{calls.length} calls</Text>
-          <Text dimColor> · {edits} edits · {commands} commands</Text>
-          {failed > 0 ? <Text color="error"> · {failed} failed</Text> : <Text color="success"> · none failed</Text>}
-          {running > 0 && <Text color="warning"> · {running} running</Text>}
+      <Box flexDirection="column" gap={1}>
+        <Box flexDirection="column">
+          <Text size="heading" weight="bold">📔 Session diary</Text>
+          <Text size="caption" dimColor>Everything Claude did this session, prompt by prompt</Text>
         </Box>
-        <Box flexDirection="row">
+
+        {calls.length > 0 && (
+          <Box flexDirection="row" flexWrap="wrap" gap={1}>
+            {chip('c-calls', `${calls.length} call${calls.length === 1 ? '' : 's'}`)}
+            {chip('c-edits', `✏️ ${edits} edit${edits === 1 ? '' : 's'}`, edits > 0 ? 'warning' : undefined)}
+            {chip('c-commands', `▶ ${commands} command${commands === 1 ? '' : 's'}`)}
+            {failed > 0 ? chip('c-failed', `✘ ${failed} failed`, 'error') : chip('c-ok', '✔ none failed', 'success')}
+            {running > 0 && chip('c-running', `… ${running} running`, 'warning')}
+          </Box>
+        )}
+
+        <Box flexDirection="row" flexWrap="wrap" gap={1}>
           {FILTERS.map(one => (
             <Button key={`f-${one.id}`} label={one.label} variant={f === one.id ? 'primary' : 'secondary'} onPress={() => update($, filter, () => one.id)} />
           ))}
-          <Button key="clear" label="Clear" onPress={() => update($, entries, () => [])} />
+          <Button key="clear" label="Clear" variant="secondary" onPress={() => update($, entries, () => [])} />
         </Box>
-        {visible.length === 0 && <Text dimColor>{all.length === 0 ? 'Nothing yet. Claude’s commands and edits will show up here as they happen.' : 'Nothing matches this filter.'}</Text>}
-        {visible.slice(-room).map(row)}
+
+        {visible.length === 0 && (
+          <Box borderStyle="round" borderColor="subtle" paddingX={1} paddingY={1}>
+            <Text dimColor>{all.length === 0 ? 'Nothing yet. Claude’s commands and edits will show up here as they happen.' : 'Nothing matches this filter.'}</Text>
+          </Box>
+        )}
+        {groups.map(card)}
       </Box>
     )
   })

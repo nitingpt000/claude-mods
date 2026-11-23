@@ -1,6 +1,6 @@
 {
   "name": "mission-scroll",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A ninja-style mission log in a side panel: every prompt is a mission ranked D to S by the work it took, flawless missions earn a star, and your shinobi rank grows as you complete them.",
   "types": "./types/index.d.ts"
 }

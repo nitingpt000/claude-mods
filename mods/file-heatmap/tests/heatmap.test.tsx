@@ -81,10 +81,16 @@ test('the panel ranks files by heat, marks this turn, and @ mentions a file, on 
 
   for (const surface of ['terminal', 'desktop', 'vscode', 'mobile'] as const) {
     const ui = await $.ui.mount({ ...PANE, surface })
-    expect((await ui.find({ type: 'Text', text: /2 files touched/ }))?.text).toContain('2 files touched')
-    expect((await ui.find({ type: 'Text', text: /1 edited · 1 only read/ }))?.text).toContain('1 only read')
-    expect((await ui.find({ type: 'Text', text: /^src\/auth\/token\.ts$/ }))?.text).toBe('src/auth/token.ts')
-    expect((await ui.find({ type: 'Text', text: /🔥$/ }))?.text).toBe(' 🔥')
+    expect((await ui.find({ type: 'Text', text: /^2 files$/ }))?.text).toBe('2 files')
+    expect((await ui.find({ type: 'Text', text: /1 edited/ }))?.text).toBe('✏️ 1 edited')
+    expect((await ui.find({ type: 'Text', text: /1 read only/ }))?.text).toBe('👁 1 read only')
+    expect((await ui.find({ type: 'Text', text: /^token\.ts$/ }))?.text).toBe('token.ts')
+    expect((await ui.find({ type: 'Text', text: /^src\/auth$/ }))?.text).toBe('src/auth')
+    expect((await ui.find({ type: 'Text', text: /this turn$/ }))?.text).toBe('🔥 this turn')
+    expect((await ui.find({ type: 'Text', text: /Hottest folder: src\/auth/ }))?.text).toContain('src/auth')
+    // Each file has a heat bar: the hottest full, a read-only file a short one.
+    expect((await ui.find({ key: 'bar-/repo/src/auth/token.ts' }))?.props.width).toBe('100%')
+    expect((await ui.find({ key: 'bar-/repo/README.md' }))?.props.width).toBe('25%')
     expect(await ui.find({ type: 'Text', text: /broken/ })).toBeUndefined()
     await ui.unmount()
   }
@@ -92,6 +98,7 @@ test('the panel ranks files by heat, marks this turn, and @ mentions a file, on 
   const ui = await $.ui.mount({ ...PANE, surface: 'desktop' })
   await ui.press({ key: 'at-/repo/src/auth/token.ts' })
   expect(filled).toEqual(['@src/auth/token.ts '])
+  expect((await ui.find({ type: 'Text', text: /^README\.md$/ }))?.text).toBe('README.md')
   await ui.press({ key: 'show' })
   expect(await ui.find({ type: 'Text', text: /^README\.md$/ })).toBeUndefined()
   await ui.unmount()

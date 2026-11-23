@@ -87,46 +87,70 @@ export const register: Register = on => {
     const shown = all.filter(a => f === 'all' || a.level === f)
     const room = Math.max(3, Math.floor(((e.viewport?.rows ?? 40) - 6) / 2))
 
-    const outcome = (a: Alert) =>
-      a.outcome === 'running' ? <Text color="warning"> … running</Text>
-      : a.outcome === 'denied' ? <Text color="success"> ⊘ you refused it</Text>
-      : a.outcome === 'failed' ? <Text dimColor> ✘ failed</Text>
-      : <Text dimColor> ✔ ran</Text>
-
-    const row = (a: Alert) => (
-      <Box flexDirection="column" key={a.id}>
-        <Box flexDirection="row">
-          <Text dimColor mono>{clock(a.at)} </Text>
-          <Text>{a.isSubagent ? '↳ ' : ''}{a.level === 'risky' ? '🔴' : '🟡'} </Text>
-          <Text weight="semibold" color={a.level === 'risky' ? 'error' : 'warning'}>{a.tool} </Text>
-          <Text mono>{a.label}</Text>
-          {outcome(a)}
-        </Box>
-        <Text dimColor>{'           '}{a.reason}</Text>
+    // A small rounded label.
+    const chip = (key: string, text: string, color?: string) => (
+      <Box key={key} borderStyle="round" borderColor={color ?? 'subtle'} paddingX={1}>
+        <Text size="caption" color={color} weight="medium">{text}</Text>
       </Box>
     )
 
-    return (
-      <Box flexDirection="column">
-        <Box flexDirection="row">
-          {risky > 0 ? <Text weight="semibold" color="error">🔴 {risky} risky</Text> : <Text color="success">🟢 nothing risky</Text>}
-          <Text color="warning"> · 🟡 {review} to review</Text>
-          <Text dimColor> · {total} calls checked</Text>
+    const outcome = (a: Alert) =>
+      a.outcome === 'running' ? <Text size="caption" color="warning">… running</Text>
+      : a.outcome === 'denied' ? <Text size="caption" color="success">⊘ you refused it</Text>
+      : a.outcome === 'failed' ? <Text size="caption" dimColor>✘ failed</Text>
+      : <Text size="caption" dimColor>✔ ran</Text>
+
+    // Newest first: the latest alert is the one to look at.
+    const card = (a: Alert) => {
+      const color = a.level === 'risky' ? 'error' : 'warning'
+      return (
+        <Box key={a.id} flexDirection="column" borderStyle="round" borderColor={color} paddingX={1}>
+          <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap={1}>
+            <Box flexDirection="row" alignItems="center" gap={1}>
+              {chip(`lvl-${a.id}`, a.level === 'risky' ? '🔴 RISKY' : '🟡 REVIEW', color)}
+              <Text weight="semibold">{a.isSubagent ? '↳ ' : ''}{a.tool}</Text>
+            </Box>
+            <Text size="caption" dimColor mono>{clock(a.at)}</Text>
+          </Box>
+          <Text mono>{a.label}</Text>
+          <Box flexDirection="row" justifyContent="space-between" gap={1}>
+            <Text size="caption" dimColor>{a.reason}</Text>
+            {outcome(a)}
+          </Box>
         </Box>
-        <Box flexDirection="row">
+      )
+    }
+
+    return (
+      <Box flexDirection="column" gap={1}>
+        <Box flexDirection="column">
+          <Text size="heading" weight="bold">🛡️ Security watch</Text>
+          <Text size="caption" dimColor>Risky and review-worthy tool calls · it watches, never blocks</Text>
+        </Box>
+
+        <Box flexDirection="row" flexWrap="wrap" gap={1}>
+          {risky > 0 ? chip('c-risky', `🔴 ${risky} risky`, 'error') : chip('c-safe', '🟢 nothing risky', 'success')}
+          {chip('c-review', `🟡 ${review} to review`, review > 0 ? 'warning' : undefined)}
+          {chip('c-checked', `${total} calls checked`)}
+        </Box>
+
+        <Box flexDirection="row" flexWrap="wrap" gap={1}>
           {FILTERS.map(one => (
             <Button key={`f-${one.id}`} label={one.label} variant={f === one.id ? 'primary' : 'secondary'} onPress={() => update($, filter, () => one.id)} />
           ))}
-          <Button key="clear" label="Clear" onPress={() => update($, alerts, () => [])} />
+          <Button key="clear" label="Clear" variant="secondary" onPress={() => update($, alerts, () => [])} />
         </Box>
+
         {shown.length === 0 && (
-          <Text dimColor>
-            {all.length === 0
-              ? 'All clear. Risky or review-worthy commands, edits and connector actions will show up here. Safe calls are checked but not listed.'
-              : 'Nothing matches this filter.'}
-          </Text>
+          <Box borderStyle="round" borderColor={all.length === 0 ? 'success' : 'subtle'} paddingX={1} paddingY={1}>
+            <Text dimColor>
+              {all.length === 0
+                ? 'All clear. Risky or review-worthy commands, edits and connector actions will show up here. Safe calls are checked but not listed.'
+                : 'Nothing matches this filter.'}
+            </Text>
+          </Box>
         )}
-        {shown.slice(-room).map(row)}
+        {shown.slice(-Math.max(2, Math.floor(room / 2))).reverse().map(card)}
       </Box>
     )
   })

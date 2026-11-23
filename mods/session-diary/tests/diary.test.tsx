@@ -61,8 +61,11 @@ test('the diary lists a prompt, a command and an edit, on every surface', async 
     expect((await ui.find({ type: 'Text', text: /Split the token logic/ }))?.text).toContain('Split the token logic')
     expect((await ui.find({ type: 'Text', text: /^npm test$/ }))?.text).toBe('npm test')
     expect((await ui.find({ type: 'Text', text: /src\/token\.ts/ }))?.text).toBe('src/token.ts')
-    expect((await ui.find({ type: 'Text', text: /^ \+2$/ }))?.text).toBe(' +2')
+    expect((await ui.find({ type: 'Text', text: /^\+2$/ }))?.text).toBe('+2')
     expect((await ui.find({ type: 'Text', text: /2 calls/ }))?.text).toBe('2 calls')
+    expect((await ui.find({ type: 'Text', text: /^✏️ 1 edit$/ }))?.text).toBe('✏️ 1 edit')
+    expect((await ui.find({ type: 'Text', text: /none failed/ }))?.text).toBe('✔ none failed')
+    expect((await ui.find({ type: 'Text', text: /Session diary/ }))?.text).toBe('📔 Session diary')
     expect(await ui.find({ type: 'Text', text: /Background task finished/ })).toBeUndefined()
     await ui.unmount()
   }

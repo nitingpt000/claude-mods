@@ -1,7 +1,9 @@
 {
   "name": "nitin-claude-mods",
-  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions, File Heatmap) for Claude Code.",
-  "owner": { "name": "nitingpt000" },
+  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions, File Heatmap, Git Pulse) for Claude Code.",
+  "owner": {
+    "name": "nitingpt000"
+  },
   "plugins": [
     {
       "name": "wisteria-moon",
@@ -24,32 +26,38 @@
     {
       "name": "session-diary",
       "description": "A side panel with a live timeline of everything Claude does this session: commands, edits, reads and searches, with timestamps, durations, +/- line counts and failures in red.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./mods/session-diary"
     },
     {
       "name": "security-watch",
       "description": "A side panel that flags risky tool calls as they happen: destructive commands, force-pushes, scripts piped from the internet, secrets in files, edits outside the project, installs and network use. It only watches, never blocks.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./mods/security-watch"
     },
     {
       "name": "mission-scroll",
       "description": "A ninja-style mission log in a side panel: every prompt is a mission ranked D to S by the work it took, flawless missions earn a star, and your shinobi rank grows as you complete them.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./mods/mission-scroll"
     },
     {
       "name": "quick-actions",
       "description": "A side panel of one-click buttons that send common requests to Claude: run tests, review changes, lint, commit, explain the last error, undo the last edit, summarize. Save your own prompts as buttons too.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./mods/quick-actions"
     },
     {
       "name": "file-heatmap",
       "description": "A side panel listing every file Claude read or edited this session, hottest first: heat bars, read and edit counts, lines added and removed, files changed this turn, the hottest folder, and an @ button to mention a file in your prompt.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "./mods/file-heatmap"
+    },
+    {
+      "name": "git-pulse",
+      "description": "A side panel with the project's git status, kept current: branch, upstream, ahead/behind, last commit, staged, unstaged, untracked and conflicted files with lines added and removed, and stashes. Refreshes after every command or edit.",
+      "version": "0.1.0",
+      "source": "./mods/git-pulse"
     }
   ]
 }

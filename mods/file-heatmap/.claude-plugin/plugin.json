@@ -1,6 +1,6 @@
 {
   "name": "file-heatmap",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A side panel listing every file Claude read or edited this session, hottest first: heat bars, read and edit counts, lines added and removed, files changed this turn, the hottest folder, and an @ button to mention a file in your prompt.",
   "types": "./types/index.d.ts"
 }

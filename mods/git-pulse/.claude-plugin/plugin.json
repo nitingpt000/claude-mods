@@ -1,0 +1,6 @@
+{
+  "name": "git-pulse",
+  "version": "0.1.0",
+  "description": "A side panel with the project's git status, kept current: branch, upstream, ahead/behind, last commit, staged, unstaged, untracked and conflicted files with lines added and removed, and stashes. Refreshes after every command or edit.",
+  "types": "./types/index.d.ts"
+}

@@ -1,6 +1,8 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus five side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll), [Quick Actions](#-quick-actions) and [File Heatmap](#-file-heatmap).
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus six side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll), [Quick Actions](#-quick-actions), [File Heatmap](#-file-heatmap) and [Git Pulse](#-git-pulse).
+
+The panels share one design: a heading, small rounded chips for the key figures, and rounded cards for the content. The text samples below show what each one holds.
 
 ## Themes
 
@@ -50,6 +52,10 @@ At the prompt of a terminal session:
 /plugin install file-heatmap --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install git-pulse --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -63,6 +69,7 @@ claude plugin install security-watch --marketplace nitingpt000/claude-mods
 claude plugin install mission-scroll --marketplace nitingpt000/claude-mods
 claude plugin install quick-actions --marketplace nitingpt000/claude-mods
 claude plugin install file-heatmap --marketplace nitingpt000/claude-mods
+claude plugin install git-pulse --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
@@ -233,6 +240,32 @@ Hottest folder: src/auth (61% of the heat)
 - Sort by **Hottest**, **Recent** or **Name**; **Edited only** hides files that were only read; **Clear** starts fresh.
 - **@** puts `@path/to/file` into the prompt box at the cursor, so you can ask about that file.
 - Only reads and edits that went through count: a refused or failed call left the file alone. The same file written with different slashes or letter case is one row.
+- Works in the terminal, the Desktop app, VS Code and mobile.
+
+## 🌿 Git Pulse
+
+A side panel with the project's git status, kept current. It opens when a session starts; `/git-pulse` opens it again.
+
+```
+🌿 Git pulse
+╭──────────────────────────────────────────────╮
+│ main                            ( ↑ 2 ) ( ↓ 1 )│
+│ tracks origin/main · 2 commits to push · 1 to pull │
+│ last commit a1b2c3d · Add File Heatmap · 3 min ago │
+╰──────────────────────────────────────────────╯
+( 6 files changed ) ( 3 staged ) ( 2 unstaged ) ( +120 ) ( −34 ) ( 📦 1 stash )
+[ ↻ Refresh ] [ ⇣ Fetch ]
+╭ STAGED · 3 ──────────────────────────────────╮
+│ (M) token.ts          src/auth       +10 −2  │
+│ (R) new name.ts       src            renamed │
+╰──────────────────────────────────────────────╯
+```
+
+- **Branch card:** the branch, ↑ commits to push and ↓ to pull, the upstream it tracks and the last commit. A branch with no upstream says it isn't pushed yet.
+- **Chips** for files changed, staged, unstaged, untracked, lines added and removed, and stashes. Conflicts get a red warning.
+- **Sections** for Conflicts, Staged, Unstaged and Untracked, each file with a colored status badge (M, A, D, R, ?, U), its name and folder, and its lines added and removed.
+- **Kept current:** it reads git at session start, after every command or edit Claude makes, at the end of each turn, and on **↻ Refresh**. **⇣ Fetch** updates ahead/behind from the remote; git is never allowed to stop and ask for a password.
+- **Read-only:** it runs `git status`, `diff --numstat`, `log` and `stash list` with the repository's hooks off, and `fetch` only when you press it. It never changes your repository.
 - Works in the terminal, the Desktop app, VS Code and mobile.
 
 ## Theme details

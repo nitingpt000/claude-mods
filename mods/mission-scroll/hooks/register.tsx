@@ -133,72 +133,87 @@ export const register: Register = on => {
       `${m.actions} action${m.actions === 1 ? '' : 's'} · ${m.edits} edit${m.edits === 1 ? '' : 's'} · ${m.commands} command${m.commands === 1 ? '' : 's'}` +
       (m.setbacks > 0 ? ` · ${m.setbacks} setback${m.setbacks === 1 ? '' : 's'}` : '')
 
+    // A small rounded label.
+    const chip = (key: string, text: string, color?: string, bold = false) => (
+      <Box key={key} borderStyle="round" borderColor={color ?? 'subtle'} paddingX={1}>
+        <Text size="caption" color={color} weight={bold ? 'bold' : 'medium'}>{text}</Text>
+      </Box>
+    )
+    const outcomeColor = (m: Mission) => (m.outcome === 'clean' ? 'claude' : m.outcome === 'setbacks' ? 'warning' : m.outcome === 'active' ? 'warning' : 'subtle')
+
     const card = (m: Mission) => {
       const rank = rankOf(m.actions)
-      const good = m.outcome === 'clean'
       return (
-        <Box key={m.id} flexDirection="column" borderStyle="round" borderColor={good ? 'claude' : 'subtle'} paddingX={1}>
-          <Box flexDirection="row">
-            <Text weight="bold" color={RANK_COLOR[rank]}>[{rank}] </Text>
-            <Text weight="semibold">{m.fromYou ? '' : '⚙ '}{m.title}</Text>
+        <Box key={m.id} flexDirection="column" borderStyle="round" borderColor={m.outcome === 'clean' ? 'claude' : 'subtle'} paddingX={1}>
+          <Box flexDirection="row" alignItems="center" gap={1}>
+            {chip(`rank-${m.id}`, rank, RANK_COLOR[rank], true)}
+            <Box flexGrow={1} flexShrink={1}>
+              <Text weight="semibold">{m.fromYou ? '' : '⚙ '}{m.title}</Text>
+            </Box>
+            <Text size="caption" dimColor mono>{clock(m.startedAt)}</Text>
           </Box>
-          <Box flexDirection="row">
-            <Text color={good ? 'claude' : m.outcome === 'setbacks' ? 'warning' : 'subtle'}>{OUTCOME_WORDS[m.outcome]}</Text>
-            <Text dimColor> · {stats(m)}{m.ms !== undefined ? ` · ${duration(m.ms)}` : ''} · {clock(m.startedAt)}</Text>
+          <Box flexDirection="row" flexWrap="wrap" alignItems="center" gap={1}>
+            <Text size="caption" weight="semibold" color={outcomeColor(m)}>{OUTCOME_WORDS[m.outcome]}</Text>
+            <Text size="caption" dimColor>{stats(m)}{m.ms !== undefined ? ` · ${duration(m.ms)}` : ''}</Text>
           </Box>
         </Box>
       )
     }
 
     const shown = done.filter(m => f === 'all' || (f === 'clean' ? m.outcome === 'clean' : m.outcome !== 'clean')).reverse()
-    const room = Math.max(2, Math.floor(((e.viewport?.rows ?? 40) - (active ? 16 : 11)) / 4))
+    const room = Math.max(2, Math.floor(((e.viewport?.rows ?? 48) - (active ? 24 : 18)) / 4))
 
     return (
       <Box flexDirection="column" gap={1}>
-        <Box flexDirection="column" borderStyle="double" borderColor="claude" paddingX={1}>
-          <Text weight="bold" color="claude">📜 MISSION SCROLL</Text>
-          <Box flexDirection="row">
-            <Text>Rank: </Text>
-            <Text weight="bold">{shinobiRank(completed.length)}</Text>
-            <Text dimColor>{up ? ` · ${up.left} more to ${up.name}` : ' · the highest rank'}</Text>
+        <Box flexDirection="column">
+          <Text size="heading" weight="bold">📜 Mission scroll</Text>
+          <Text size="caption" dimColor>Every prompt is a mission, ranked by the work it took</Text>
+        </Box>
+
+        <Box flexDirection="column" borderStyle="double" borderColor="claude" paddingX={1} gap={1}>
+          <Box flexDirection="column">
+            <Text size="caption" dimColor>YOUR SHINOBI RANK</Text>
+            <Text size="title" weight="bold" color="claude">{shinobiRank(completed.length)}</Text>
+            <Text size="caption" dimColor>{up ? `${up.left} more mission${up.left === 1 ? '' : 's'} to ${up.name}` : 'The highest rank'}</Text>
           </Box>
-          <Text>
-            {completed.length} mission{completed.length === 1 ? '' : 's'} · ⭐ {flawless} flawless{run >= 2 ? ` · 🔥 streak ${run}` : ''}
-          </Text>
-          <Box flexDirection="row">
-            {counts.map(({ r, n }) => (
-              <Text key={r} color={n > 0 ? RANK_COLOR[r] : 'subtle'} weight={n > 0 ? 'semibold' : 'regular'}>{r}·{n}  </Text>
-            ))}
+          <Box flexDirection="row" flexWrap="wrap" gap={1}>
+            {chip('c-missions', `${completed.length} mission${completed.length === 1 ? '' : 's'}`)}
+            {chip('c-flawless', `⭐ ${flawless} flawless`, flawless > 0 ? 'claude' : undefined)}
+            {run >= 2 && chip('c-streak', `🔥 streak ${run}`, 'error')}
+          </Box>
+          <Box flexDirection="row" flexWrap="wrap" gap={1}>
+            {counts.map(({ r, n }) => chip(`t-${r}`, `${r} · ${n}`, n > 0 ? RANK_COLOR[r] : undefined, n > 0))}
           </Box>
         </Box>
 
         {active !== undefined && (
           <Box flexDirection="column" borderStyle="round" borderColor="warning" paddingX={1}>
-            <Box flexDirection="row">
+            <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap={1}>
               <Text weight="bold" color="warning">🗡 MISSION UNDER WAY</Text>
-              <Text dimColor> · rank so far </Text>
-              <Text weight="bold" color={RANK_COLOR[rankOf(active.actions)]}>{rankOf(active.actions)}</Text>
+              {chip('active-rank', `rank so far ${rankOf(active.actions)}`, RANK_COLOR[rankOf(active.actions)], true)}
             </Box>
             <Text weight="semibold">{active.fromYou ? '' : '⚙ '}{active.title}</Text>
-            <Text dimColor>{stats(active)} · {duration(Math.max(0, now - active.startedAt))}</Text>
-            {active.last !== undefined && <Text mono>latest: {active.last}</Text>}
+            <Text size="caption" dimColor>{stats(active)} · {duration(Math.max(0, now - active.startedAt))}</Text>
+            {active.last !== undefined && <Text size="caption" mono>latest: {active.last}</Text>}
           </Box>
         )}
 
-        <Box flexDirection="row">
+        <Box flexDirection="row" flexWrap="wrap" gap={1}>
           {FILTERS.map(one => (
             <Button key={`f-${one.id}`} label={one.label} variant={f === one.id ? 'primary' : 'secondary'} onPress={() => update($, filter, () => one.id)} />
           ))}
-          <Button key="clear" label="Clear" onPress={() => update($, missions, l => l.filter(m => m.outcome === 'active'))} />
+          <Button key="clear" label="Clear" variant="secondary" onPress={() => update($, missions, l => l.filter(m => m.outcome === 'active'))} />
         </Box>
 
         {shown.length === 0 && (
-          <Text dimColor>
-            {done.length === 0 ? 'No missions yet. Send a prompt: it becomes your first mission, ranked by how much work it takes.' : 'No missions match this filter.'}
-          </Text>
+          <Box borderStyle="round" borderColor="subtle" paddingX={1} paddingY={1}>
+            <Text dimColor>
+              {done.length === 0 ? 'No missions yet. Send a prompt: it becomes your first mission, ranked by how much work it takes.' : 'No missions match this filter.'}
+            </Text>
+          </Box>
         )}
         {shown.slice(0, room).map(card)}
-        <Text dimColor>Ranks: D 0–2 actions · C 3–7 · B 8–15 · A 16–30 · S 31+</Text>
+        <Text size="caption" dimColor>Ranks: D 0–2 actions · C 3–7 · B 8–15 · A 16–30 · S 31+</Text>
       </Box>
     )
   })

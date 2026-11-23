@@ -98,36 +98,59 @@ export const register: Register = on => {
       await update($, notice, () => `Removed “${a.label}”.`)
     }
 
+    // A small rounded label.
+    const chip = (key: string, text: string, color?: string) => (
+      <Box key={key} borderStyle="round" borderColor={color ?? 'subtle'} paddingX={1}>
+        <Text size="caption" color={color} weight="medium">{text}</Text>
+      </Box>
+    )
+
+    const preview = (p: string) => (p.length > 70 ? `${p.slice(0, 69)}…` : p)
+
+    // One action: the button that sends it, ✎ to edit first, ✕ for your own, and
+    // the start of its prompt so you know what it will say.
     const row = (a: Action, removable: boolean) => (
-      <Box key={a.id} flexDirection="row" alignItems="center">
-        <Button key={`run-${a.id}`} label={`${a.icon} ${a.label}`} onPress={() => send(a)} />
-        <Button key={`edit-${a.id}`} label="✎" plain onPress={() => edit(a)} />
-        {removable && <Button key={`del-${a.id}`} label="✕" plain onPress={() => remove(a)} />}
+      <Box key={a.id} flexDirection="column">
+        <Box flexDirection="row" alignItems="center" gap={1}>
+          <Box flexGrow={1}>
+            <Button key={`run-${a.id}`} label={`${a.icon} ${a.label}`} variant="secondary" onPress={() => send(a)} />
+          </Box>
+          <Button key={`edit-${a.id}`} label="✎ Edit" plain onPress={() => edit(a)} />
+          {removable && <Button key={`del-${a.id}`} label="✕" plain onPress={() => remove(a)} />}
+        </Box>
+        <Text size="caption" dimColor>{preview(a.prompt)}</Text>
       </Box>
     )
 
     return (
       <Box flexDirection="column" gap={1}>
-        <Box flexDirection="row">
-          <Text weight="semibold">⚡ Quick actions</Text>
-          {working ? <Text color="warning"> · Claude is working: a press waits its turn</Text> : <Text color="success"> · ready</Text>}
-        </Box>
-        {ran !== null && <Text dimColor>Last sent: {ran.label} at {clock(ran.at)}</Text>}
-        {note !== null && <Text color="claude">{note}</Text>}
-
         <Box flexDirection="column">
-          <Text dimColor>BUILT IN</Text>
+          <Text size="heading" weight="bold">⚡ Quick actions</Text>
+          <Text size="caption" dimColor>One click sends a prompt · ✎ Edit puts it in the box first</Text>
+        </Box>
+
+        <Box flexDirection="row" flexWrap="wrap" gap={1}>
+          {working ? chip('busy', 'Claude is working · a press waits its turn', 'warning') : chip('ready', '● ready', 'success')}
+          {ran !== null && chip('last', `Last sent: ${ran.label} at ${clock(ran.at)}`)}
+        </Box>
+
+        {note !== null && (
+          <Box borderStyle="round" borderColor="claude" paddingX={1}>
+            <Text size="caption" color="claude">{note}</Text>
+          </Box>
+        )}
+
+        <Box flexDirection="column" borderStyle="round" borderColor="subtle" paddingX={1} gap={1}>
+          <Text size="caption" weight="bold" dimColor>BUILT IN</Text>
           {BUILT_IN.map(a => row(a, false))}
         </Box>
 
-        <Box flexDirection="column">
-          <Text dimColor>YOURS</Text>
-          {mine.length === 0 && <Text dimColor>None yet. Type a prompt in the box and press “Save the prompt box”, or use /quick-add Label | prompt.</Text>}
+        <Box flexDirection="column" borderStyle="round" borderColor="claude" paddingX={1} gap={1}>
+          <Text size="caption" weight="bold" color="claude">YOURS · {mine.length}</Text>
+          {mine.length === 0 && <Text size="caption" dimColor>None yet. Type a prompt in the box and press “Save the prompt box”, or use /quick-add Label | prompt.</Text>}
           {mine.map(a => row(a, true))}
-          <Button key="save-draft" label="＋ Save the prompt box as a button" onPress={saveDraft} />
+          <Button key="save-draft" label="＋ Save the prompt box as a button" variant="primary" onPress={saveDraft} />
         </Box>
-
-        <Text dimColor>A button sends its prompt. ✎ puts it in the prompt box to edit first.</Text>
       </Box>
     )
   })
