@@ -1,6 +1,6 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus four side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll) and [Quick Actions](#-quick-actions).
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus five side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll), [Quick Actions](#-quick-actions) and [File Heatmap](#-file-heatmap).
 
 ## Themes
 
@@ -46,6 +46,10 @@ At the prompt of a terminal session:
 /plugin install quick-actions --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install file-heatmap --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -58,6 +62,7 @@ claude plugin install session-diary --marketplace nitingpt000/claude-mods
 claude plugin install security-watch --marketplace nitingpt000/claude-mods
 claude plugin install mission-scroll --marketplace nitingpt000/claude-mods
 claude plugin install quick-actions --marketplace nitingpt000/claude-mods
+claude plugin install file-heatmap --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
@@ -204,6 +209,30 @@ YOURS
 - While Claude is working the panel says so, and a press waits its turn rather than interrupting.
 - The built-in prompts are careful: **Run tests** and **Review changes** explain without changing code, **Commit** doesn't push, and **Undo last edit** says exactly what it reverted.
 - **Your own buttons:** type a prompt in the box and press **＋ Save the prompt box as a button**, or run `/quick-add Deploy | Deploy the app to staging and report the URL` (the label before `|` is optional). **✕** removes one. Your buttons are kept across sessions, up to 24.
+- Works in the terminal, the Desktop app, VS Code and mobile.
+
+## 🔥 File Heatmap
+
+A side panel listing every file Claude read or edited this session, hottest first. It opens when a session starts; `/heatmap` opens it again.
+
+```
+🔥 9 files touched · 4 edited · 5 only read · +212 −58
+Hottest folder: src/auth (61% of the heat)
+[ Hottest ] [ Recent ] [ Name ] [ Edited only ] [ Clear ]
+
+██████████ src/auth/token.ts 🔥  👁2 ✏️4  +96 −31   @
+██████░░░░ src/auth/session.ts   👁1 ✏️2  +40 −12   @
+███░░░░░░░ tests/auth.test.ts       ✏️1  +58        @
+█░░░░░░░░░ README.md             👁1               @
+```
+
+- **Heat:** an edit counts 3 and a read 1. Edited files warm from green through amber to red as they get hotter; files only read stay grey.
+- Each row shows 👁 reads, ✏️ edits and lines added and removed. 🔥 marks files changed in the current turn.
+- The header shows totals and the **hottest folder** with its share of the heat.
+- Paths are shown relative to the project; files outside it are shortened.
+- Sort by **Hottest**, **Recent** or **Name**; **Edited only** hides files that were only read; **Clear** starts fresh.
+- **@** puts `@path/to/file` into the prompt box at the cursor, so you can ask about that file.
+- Only reads and edits that went through count: a refused or failed call left the file alone. The same file written with different slashes or letter case is one row.
 - Works in the terminal, the Desktop app, VS Code and mobile.
 
 ## Theme details

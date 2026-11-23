@@ -1,6 +1,6 @@
 {
   "name": "nitin-claude-mods",
-  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions) for Claude Code.",
+  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions, File Heatmap) for Claude Code.",
   "owner": { "name": "nitingpt000" },
   "plugins": [
     {
@@ -44,6 +44,12 @@
       "description": "A side panel of one-click buttons that send common requests to Claude: run tests, review changes, lint, commit, explain the last error, undo the last edit, summarize. Save your own prompts as buttons too.",
       "version": "0.1.0",
       "source": "./mods/quick-actions"
+    },
+    {
+      "name": "file-heatmap",
+      "description": "A side panel listing every file Claude read or edited this session, hottest first: heat bars, read and edit counts, lines added and removed, files changed this turn, the hottest folder, and an @ button to mention a file in your prompt.",
+      "version": "0.1.0",
+      "source": "./mods/file-heatmap"
     }
   ]
 }
