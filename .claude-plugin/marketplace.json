@@ -1,6 +1,6 @@
 {
   "name": "nitin-claude-mods",
-  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll) for Claude Code.",
+  "description": "Animated backdrop themes and side panels (Session Diary, Security Watch, Mission Scroll, Quick Actions) for Claude Code.",
   "owner": { "name": "nitingpt000" },
   "plugins": [
     {
@@ -38,6 +38,12 @@
       "description": "A ninja-style mission log in a side panel: every prompt is a mission ranked D to S by the work it took, flawless missions earn a star, and your shinobi rank grows as you complete them.",
       "version": "0.1.0",
       "source": "./mods/mission-scroll"
+    },
+    {
+      "name": "quick-actions",
+      "description": "A side panel of one-click buttons that send common requests to Claude: run tests, review changes, lint, commit, explain the last error, undo the last edit, summarize. Save your own prompts as buttons too.",
+      "version": "0.1.0",
+      "source": "./mods/quick-actions"
     }
   ]
 }

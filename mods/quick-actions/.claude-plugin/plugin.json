@@ -1,0 +1,6 @@
+{
+  "name": "quick-actions",
+  "version": "0.1.0",
+  "description": "A side panel of one-click buttons that send common requests to Claude: run tests, review changes, lint, commit, explain the last error, undo the last edit, summarize. Save your own prompts as buttons too.",
+  "types": "./types/index.d.ts"
+}

@@ -1,6 +1,6 @@
 # Claude Code mods
 
-Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus three side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch) and [Mission Scroll](#-mission-scroll).
+Animated backdrop themes for the Claude Code Desktop app, each showing at a glance whether Claude is working or waiting on you, plus four side panels: [Session Diary](#-session-diary), [Security Watch](#%EF%B8%8F-security-watch), [Mission Scroll](#-mission-scroll) and [Quick Actions](#-quick-actions).
 
 ## Themes
 
@@ -42,6 +42,10 @@ At the prompt of a terminal session:
 /plugin install mission-scroll --marketplace nitingpt000/claude-mods
 ```
 
+```
+/plugin install quick-actions --marketplace nitingpt000/claude-mods
+```
+
 Answer `y` to add the marketplace, then pick a scope (user is the usual choice).
 
 From a shell:
@@ -53,6 +57,7 @@ claude plugin install shinobi-dusk --marketplace nitingpt000/claude-mods
 claude plugin install session-diary --marketplace nitingpt000/claude-mods
 claude plugin install security-watch --marketplace nitingpt000/claude-mods
 claude plugin install mission-scroll --marketplace nitingpt000/claude-mods
+claude plugin install quick-actions --marketplace nitingpt000/claude-mods
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `nitingpt000/claude-mods`, then **Add plugin**.
@@ -172,6 +177,34 @@ A ninja-style mission log in a side panel. Every prompt you send is a mission, r
 - While Claude works, a live card shows the mission's rank so far, its counts, how long it has run and the latest action.
 - A flawless A- or S-rank mission earns a toast. Missions started by an automated prompt, such as a background task's notice, are marked ⚙.
 - Works in the terminal, the Desktop app, VS Code and mobile. It only watches.
+
+## ⚡ Quick Actions
+
+A side panel of one-click buttons that send common requests to Claude. It opens when a session starts; `/quick` opens it again.
+
+```
+⚡ Quick actions · ready
+Last sent: Run tests at 12:30
+
+BUILT IN
+[ 🧪 Run tests ]          ✎
+[ 🔍 Review changes ]     ✎
+[ 🧹 Lint & fix ]         ✎
+[ 💾 Commit ]             ✎
+[ ❓ Explain last error ] ✎
+[ ↩ Undo last edit ]      ✎
+[ 📝 Summarize session ]  ✎
+
+YOURS
+[ 🚀 Deploy ]             ✎ ✕
+[ ＋ Save the prompt box as a button ]
+```
+
+- **A button** sends its prompt, as if you had typed it. **✎** puts the prompt in the prompt box instead, so you can edit it before pressing Enter.
+- While Claude is working the panel says so, and a press waits its turn rather than interrupting.
+- The built-in prompts are careful: **Run tests** and **Review changes** explain without changing code, **Commit** doesn't push, and **Undo last edit** says exactly what it reverted.
+- **Your own buttons:** type a prompt in the box and press **＋ Save the prompt box as a button**, or run `/quick-add Deploy | Deploy the app to staging and report the URL` (the label before `|` is optional). **✕** removes one. Your buttons are kept across sessions, up to 24.
+- Works in the terminal, the Desktop app, VS Code and mobile.
 
 ## Theme details
 
