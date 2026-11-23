@@ -1,0 +1,19 @@
+{
+  "name": "nitin-claude-mods",
+  "description": "Animated backdrop themes for the Claude Code Desktop app.",
+  "owner": { "name": "nitingpt000" },
+  "plugins": [
+    {
+      "name": "wisteria-moon",
+      "description": "A Taisho-era night behind the Claude Code Desktop chat: wisteria sways over a moonlit river while Claude works, and arcs of water and flame sweep around the moon when it needs you. Desktop app only.",
+      "version": "0.1.0",
+      "source": "./mods/wisteria-moon"
+    },
+    {
+      "name": "grand-tide",
+      "description": "A galleon at sunset behind the Claude Code Desktop chat: the ship rides the swell while Claude works, and a treasure map unrolls with a route to a glowing X when it needs you. Desktop app only.",
+      "version": "0.1.0",
+      "source": "./mods/grand-tide"
+    }
+  ]
+}

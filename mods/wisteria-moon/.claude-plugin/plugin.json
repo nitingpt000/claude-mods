@@ -1,0 +1,6 @@
+{
+  "name": "wisteria-moon",
+  "version": "0.1.0",
+  "description": "A Taisho-era night behind the Claude Code Desktop chat: wisteria sways over a moonlit river while Claude works, and arcs of water and flame sweep around the moon when it needs you.",
+  "types": "./types/index.d.ts"
+}

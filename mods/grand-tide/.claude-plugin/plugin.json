@@ -1,0 +1,6 @@
+{
+  "name": "grand-tide",
+  "version": "0.1.0",
+  "description": "A galleon at sunset behind the Claude Code Desktop chat: the ship rides the swell while Claude works, and a treasure map unrolls with a route to a glowing X when it needs you.",
+  "types": "./types/index.d.ts"
+}
